@@ -20,7 +20,13 @@ class Scrapper {
       this.browser = await puppeteer.connect({ browserWSEndpoint, ignoreHTTPSErrors: true });
     } else {
       console.log(`[${this.config.device}] Spawning new browser`);
-      this.browser = await puppeteer.launch({ headless: !this.debug, ignoreHTTPSErrors: true });
+      
+      let puppeteerOptions = { headless: !debug, ignoreHTTPSErrors: true};
+      if (process.env.CONTAINER) {
+        puppeteerOptions['args'] = ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'];
+      }
+
+      this.browser = await puppeteer.launch(puppeteerOptions);
       process.env.BROWSER_END_POINT = this.browser.wsEndpoint();
     }
 

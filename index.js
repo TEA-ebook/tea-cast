@@ -24,7 +24,14 @@ scanner.on('online', chromecast => {
 
 scanner.on('offline', chromecast => console.log(`Removed chromecast ${chromecast.friendlyName}`));
 
-puppeteer.launch({ ignoreHTTPSErrors: true }).then(browser => {
+
+let pptrOptions = { ignoreHTTPSErrors: true };
+
+if (process.env.CONTAINER) {
+  pptrOptions['args'] = ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'];
+}
+
+puppeteer.launch(pptrOptions).then(browser => {
   const browserEndPoint = browser.wsEndpoint();
   console.log(browserEndPoint);
 
