@@ -26,7 +26,6 @@ scanner.on('offline', chromecast => console.log(`Removed chromecast ${chromecast
 // scan chromecast devices
 scanner.start();
 
-
 // admin server
 const app = express();
 

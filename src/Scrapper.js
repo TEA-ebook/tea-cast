@@ -14,7 +14,12 @@ class Scrapper {
   async start() {
     console.log(`[${this.config.device}] Starting to scrap ${this.config.url}`);
 
-    this.browser = await puppeteer.launch({ headless: !this.debug, ignoreHTTPSErrors: true });
+    let puppeteerOptions = { headless: !this.debug, ignoreHTTPSErrors: true };
+    if (process.env.CONTAINER) {
+      puppeteerOptions['args'] = ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'];
+    }
+
+    this.browser = await puppeteer.launch(puppeteerOptions);
 
     this.page = await this.browser.newPage();
     this.page.setViewport(this.config.viewport);
