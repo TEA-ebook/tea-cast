@@ -14,15 +14,7 @@ class Scrapper {
   async start() {
     console.log(`[${this.config.device}] Starting to scrap ${this.config.url}`);
 
-    const browserWSEndpoint = process.env.BROWSER_END_POINT;
-    if (browserWSEndpoint) {
-      console.log(`[${this.config.device}] Connect to browser at ${browserWSEndpoint}`);
-      this.browser = await puppeteer.connect({ browserWSEndpoint, ignoreHTTPSErrors: true });
-    } else {
-      console.log(`[${this.config.device}] Spawning new browser`);
-      this.browser = await puppeteer.launch({ headless: !this.debug, ignoreHTTPSErrors: true });
-      process.env.BROWSER_END_POINT = this.browser.wsEndpoint();
-    }
+    this.browser = await puppeteer.launch({ headless: !this.debug, ignoreHTTPSErrors: true });
 
     this.page = await this.browser.newPage();
     this.page.setViewport(this.config.viewport);

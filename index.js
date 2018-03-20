@@ -1,5 +1,4 @@
 const nodecastor = require('nodecastor');
-const puppeteer = require('puppeteer');
 const express = require('express');
 const exphbs  = require('express-handlebars');
 
@@ -24,15 +23,9 @@ scanner.on('online', chromecast => {
 
 scanner.on('offline', chromecast => console.log(`Removed chromecast ${chromecast.friendlyName}`));
 
-puppeteer.launch({ ignoreHTTPSErrors: true }).then(browser => {
-  const browserEndPoint = browser.wsEndpoint();
-  console.log(browserEndPoint);
+// scan chromecast devices
+scanner.start();
 
-  process.env.BROWSER_END_POINT = browserEndPoint;
-
-  // scan chromecast devices
-  scanner.start();
-});
 
 // admin server
 const app = express();
