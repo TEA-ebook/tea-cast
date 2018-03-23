@@ -1,16 +1,16 @@
 const GrafanaScrapper = require(`${__dirname}/GrafanaScrapper.js`);
 const LockRedisScrapper =  require(`${__dirname}/LockRedisScrapper.js`);
 
-const localIp = require('./ip.js');
+const localIp = require(`${__dirname}/ip.js`);
 
 class Device {
 
-  constructor(chromecast, config) {
+  constructor(chromecast, config, browser) {
     this.chromecast = chromecast;
     this.config = config;
+    this.browser = browser;
     this.name = this.config.device;
     this.session = null;
-    this.scrapHandler = null;
     this.live = false;
   }
 
@@ -79,11 +79,11 @@ class Device {
     // scrap image and send it
     if (displayMethod === 'scrapper') {
       if (id === 'grafana') {
-        this.scrapper = new GrafanaScrapper(device.config, `http://${localIp}:9999/screenshots`, device.displayImage.bind(device));
-        this.scrapper.start().catch(console.log);
+        this.scrapper = new GrafanaScrapper(device.config, device.browser, device.displayImage.bind(device));
+        this.scrapper.start();
       } else if (id === 'lockRedis') {
-        this.scrapper = new LockRedisScrapper(device.config, `http://${localIp}:9999/screenshots`, device.displayImage.bind(device));
-        this.scrapper.start().catch(console.log);
+        this.scrapper = new LockRedisScrapper(device.config, device.browser, device.displayImage.bind(device));
+        this.scrapper.start();
       } else {
         console.log(`Unimplemented ${id} scrapper.`);
       }

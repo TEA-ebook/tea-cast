@@ -2,18 +2,22 @@ const nodecastor = require('nodecastor');
 const express = require('express');
 const exphbs  = require('express-handlebars');
 
-const config = require(`./config.json`);
+const config = require('./config.tea.json');
 const Device = require('./src/Device.js');
+const BrowserScrapper = require('./src/BrowserScrapper.js');
 
 const devices = [];
 const scanner = nodecastor.scan();
+
+const localIp = require('./src/ip.js');
+const browser = new BrowserScrapper(`http://${localIp}:9999/screenshots`);
 
 
 scanner.on('online', chromecast => {
   console.log(`Detected chromecast ${chromecast.friendlyName}`);
   const connectedChromecastDashboard = config.dashboards.filter(dashboard => dashboard.device === chromecast.friendlyName);
   if (connectedChromecastDashboard.length > 0) {
-    const device = new Device(chromecast, connectedChromecastDashboard[0]);
+    const device = new Device(chromecast, connectedChromecastDashboard[0], browser);
     devices.push(device);
     device.connect(config.castAppId, config.castUrn);
     return;
@@ -24,7 +28,7 @@ scanner.on('online', chromecast => {
 scanner.on('offline', chromecast => console.log(`Removed chromecast ${chromecast.friendlyName}`));
 
 // scan chromecast devices
-scanner.start();
+browser.start().then(() => scanner.start());
 
 // admin server
 const app = express();

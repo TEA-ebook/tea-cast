@@ -1,44 +1,22 @@
-const puppeteer = require('puppeteer');
-
 class Scrapper {
 
-  constructor(config, serverPath, scrapListener) {
-    this.debug = false;
-    this.outputPath = 'public/screenshots/';
-
+  constructor(config, browser, scrapListener) {
     this.config = config;
-    this.serverPath = serverPath;
+    this.browser = browser;
     this.scrapListener = scrapListener;
   }
 
-  async start() {
-    console.log(`[${this.config.device}] Starting to scrap ${this.config.url}`);
-
-    let puppeteerOptions = { headless: !this.debug, ignoreHTTPSErrors: true };
-    if (process.env.CONTAINER) {
-      puppeteerOptions['args'] = ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'];
-    }
-
-    this.browser = await puppeteer.launch(puppeteerOptions);
-
-    this.page = await this.browser.newPage();
-    this.page.setViewport(this.config.viewport);
-
-    await this.navigate();
-
+  start() {
     this.scrap();
     this.scrapHandler = setInterval(this.scrap.bind(this), this.config.refreshInterval);
   }
 
-  async navigate() {
+  async navigation(page) {
 
   }
 
   async scrap() {
-    await this.page.reload({ waitUntil: 'networkidle2', timeout: 60000 });
-    return this.page
-      .screenshot({ path: `${this.outputPath}/${this.config.device}.png` })
-      .then(() => this.scrapListener(`${this.serverPath}/${this.config.device}.png?time=${Date.now()}`));
+    this.browser.requestPageScrap(this.config, this.navigation.bind(this), this.scrapListener);
   }
 
   stop() {
@@ -46,7 +24,6 @@ class Scrapper {
       clearInterval(this.scrapHandler);
       this.scrapHandler = null;
     }
-    return this.page.close();
   }
 }
 
