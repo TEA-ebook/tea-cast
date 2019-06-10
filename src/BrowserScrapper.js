@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 class BrowserScrapper {
 
   constructor(serverPath) {
-    this.debug = true;
+    this.debug = false;
     this.outputPath = 'public/screenshots/';
     this.requests = [];
     this.processing = false;
@@ -14,14 +14,17 @@ class BrowserScrapper {
   async start() {
     console.log(`Starting browser`);
 
-    let puppeteerOptions = { headless: !this.debug, ignoreHTTPSErrors: true };
+    const puppeteerOptions = {headless: !this.debug, ignoreHTTPSErrors: true};
     if (process.env.CONTAINER) {
       puppeteerOptions['args'] = ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'];
+    }
+    if (process.env.CHROMIUM_PATH) {
+      puppeteerOptions['executablePath'] = process.env.CHROMIUM_PATH;
     }
 
     this.browser = await puppeteer.launch(puppeteerOptions);
 
-    setInterval(() =>this.processQueue(), 500);
+    setInterval(() => this.processQueue(), 500);
   }
 
   async requestPageScrap(config, navigation, onResult) {
@@ -42,7 +45,7 @@ class BrowserScrapper {
     this.processRequest(this.requests.shift())
   }
 
-  async processRequest({ config, navigation, onResult }) {
+  async processRequest({config, navigation, onResult}) {
     console.log('[Browser] Processing request', config.device);
     this.processing = true;
 
@@ -52,7 +55,7 @@ class BrowserScrapper {
     let page;
     if (openedPage.length === 0) {
       page = await this.browser.newPage();
-      await page.goto(config.url, { waitUntil: 'networkidle0' });
+      await page.goto(config.url, {waitUntil: 'networkidle0'});
     } else {
       page = openedPage[0];
       await page.bringToFront();
@@ -68,7 +71,7 @@ class BrowserScrapper {
 
   async scrap(page, device) {
     return page
-      .screenshot({ path: `${this.outputPath}/${device}.png` })
+      .screenshot({path: `${this.outputPath}/${device}.png`})
       .then(() => `${this.serverPath}/${device}.png?time=${Date.now()}`);
   }
 

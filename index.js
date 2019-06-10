@@ -2,7 +2,7 @@ const nodecastor = require('nodecastor');
 const express = require('express');
 const exphbs  = require('express-handlebars');
 
-const config = require('./config.tea.json');
+const config = require('./config.json');
 const Device = require('./src/Device.js');
 const BrowserScrapper = require('./src/BrowserScrapper.js');
 
