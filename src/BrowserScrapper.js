@@ -53,28 +53,19 @@ class BrowserScrapper {
     console.log('[Browser] Processing request', config.device);
     this.processing = true;
 
-    const openedPages = await this.browser.pages();
-    const openedPage = openedPages.filter(page => page.url() === config.url);
-
-    let page;
     try {
-      if (openedPage.length === 0) {
-        page = await this.browser.newPage();
-        await page.goto(config.url, {waitUntil: 'networkidle0'});
-      } else {
-        page = openedPage[0];
-        await page.bringToFront();
-      }
+      const page = await this.browser.newPage();
+      await page.goto(config.url, {waitUntil: 'networkidle0'});
+
+      await navigation(page);
+
+      const imageUrl = await this.scrap(page, config.device);
+      onResult(imageUrl);
+
+      await page.close();
     } catch (error) {
       console.log(`[Browser] Error processing request on ${config.device}`, error);
-      this.processing = false;
-      return;
     }
-
-    await navigation(page);
-
-    const imageUrl = await this.scrap(page, config.device);
-    onResult(imageUrl);
 
     this.processing = false;
   }
