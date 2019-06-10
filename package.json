@@ -1,6 +1,6 @@
 {
   "name": "tea-cast",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Stream content to multiple Chromecast devices from one app",
   "main": "index.js",
   "scripts": {
@@ -12,9 +12,8 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.16.2",
-    "express-handlebars": "^3.0.0",
     "mdns": "^2.3.4",
     "nodecastor": "github:possan/nodecastor",
-    "puppeteer": "latest"
+    "puppeteer": "1.17.0"
   }
 }

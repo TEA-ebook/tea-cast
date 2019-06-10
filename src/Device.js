@@ -1,8 +1,6 @@
 const GrafanaScrapper = require(`${__dirname}/GrafanaScrapper.js`);
 const LockRedisScrapper =  require(`${__dirname}/LockRedisScrapper.js`);
 
-const localIp = require(`${__dirname}/ip.js`);
-
 class Device {
 
   constructor(chromecast, config, browser) {
@@ -43,7 +41,6 @@ class Device {
 
     this.chromecast.on('disconnect', () => {
       device.stop();
-      //device.start(castAppId, castUrn);
     });
   }
 
@@ -97,7 +94,7 @@ class Device {
 
   displayImage(url) {
     console.log(`[${this.name}] Display image ${url}`);
-    this.lastImageUrl = url;
+    //this.lastImageUrl = url;
     this.session.send({ image: url });
   }
 

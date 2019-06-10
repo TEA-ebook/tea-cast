@@ -18,7 +18,7 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
    libasound2 \
    libatk-bridge2.0-0 \
    libgtk-3-0 \
-   avahi-daemon \ 
+   avahi-daemon \
    avahi-discover \
    avahi-utils \
    libnss-mdns \

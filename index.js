@@ -1,6 +1,5 @@
 const nodecastor = require('nodecastor');
 const express = require('express');
-const exphbs  = require('express-handlebars');
 
 const config = require('./config.json');
 const Device = require('./src/Device.js');
@@ -15,9 +14,9 @@ const browser = new BrowserScrapper(`http://${localIp}:9999/screenshots`);
 
 scanner.on('online', chromecast => {
   console.log(`Detected chromecast ${chromecast.friendlyName}`);
-  const connectedChromecastDashboard = config.dashboards.filter(dashboard => dashboard.device === chromecast.friendlyName);
-  if (connectedChromecastDashboard.length > 0) {
-    const device = new Device(chromecast, connectedChromecastDashboard[0], browser);
+  const connectedChromecastConfigs = config.dashboards.filter(dashboard => dashboard.device === chromecast.friendlyName);
+  if (connectedChromecastConfigs.length > 0) {
+    const device = new Device(chromecast, connectedChromecastConfigs[0], browser);
     devices.push(device);
     device.connect(config.castAppId, config.castUrn);
     return;
@@ -33,11 +32,8 @@ browser.start().then(() => scanner.start());
 // admin server
 const app = express();
 
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-app.set('view engine', 'handlebars');
-
 app.listen(9999, function () {
-  console.log('Server listening on port 9999')
+   console.log('Server listening on port 9999');
 });
 
 const options = {
@@ -51,13 +47,8 @@ const options = {
 
 app.use(express.static('public', options));
 
-app.get('/', function (req, res) {
-  res.render('index', { devices: devices.map(d => ({ name: d.name, image: d.lastImageUrl })) });
-});
-
 process.on('SIGINT', function() {
   console.log('Stopping TEA Cast');
-  //scanner.end();
   devices.map(device => device.stop());
   process.exit(0);
 });
