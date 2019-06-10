@@ -28,6 +28,10 @@ class BrowserScrapper {
   }
 
   async requestPageScrap(config, navigation, onResult) {
+    if (this.requests.some(r => r.config.device === config.device)) {
+      console.log('[Browser] Drop scrap request because already in queue', config.device);
+      return;
+    }
     this.requests.push({
       config,
       navigation,
@@ -53,12 +57,18 @@ class BrowserScrapper {
     const openedPage = openedPages.filter(page => page.url() === config.url);
 
     let page;
-    if (openedPage.length === 0) {
-      page = await this.browser.newPage();
-      await page.goto(config.url, {waitUntil: 'networkidle0'});
-    } else {
-      page = openedPage[0];
-      await page.bringToFront();
+    try {
+      if (openedPage.length === 0) {
+        page = await this.browser.newPage();
+        await page.goto(config.url, {waitUntil: 'networkidle0'});
+      } else {
+        page = openedPage[0];
+        await page.bringToFront();
+      }
+    } catch (error) {
+      console.log(`[Browser] Error processing request on ${config.device}`, error);
+      this.processing = false;
+      return;
     }
 
     await navigation(page);
