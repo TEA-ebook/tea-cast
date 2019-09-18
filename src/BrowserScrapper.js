@@ -50,7 +50,9 @@ class BrowserScrapper {
   }
 
   async processRequest({config, navigation, onResult}) {
-    console.log('[Browser] Processing request', config.device);
+    if (this.debug) {
+      console.log('[Browser] Processing request', config.device);
+    }
     this.processing = true;
 
     try {

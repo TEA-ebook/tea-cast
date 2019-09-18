@@ -65,6 +65,7 @@ class Device {
     if (this.scrapper) {
       return this.scrapper.stop();
     }
+    clearHandler(this.refreshHandler);
     return Promise.resolve();
   }
 
@@ -88,13 +89,15 @@ class Device {
 
     // send URL to display in iframe
     else if (displayMethod === 'iframe') {
+      if (this.config.refreshInterval) {
+        clearHandler(this.refreshHandler);
+        this.refreshHandler = setInterval(() => device.displayUrl(device.config.url), this.config.refreshInterval);
+      }
       device.displayUrl(device.config.url);
     }
   }
 
   displayImage(url) {
-    console.log(`[${this.name}] Display image ${url}`);
-    //this.lastImageUrl = url;
     this.session.send({ image: url });
   }
 
@@ -146,6 +149,12 @@ function getSession(app, castUrn) {
       resolve(session);
     });
   });
+}
+
+function clearHandler(handler) {
+    if (handler) {
+        clearInterval(handler);
+    }
 }
 
 module.exports = Device;
