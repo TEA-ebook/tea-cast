@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer');
 
+const MAX_NAVIGATION_TIMEOUT = 60 * 1000; // 1 minute
+
 class BrowserScrapper {
 
   constructor(serverPath) {
@@ -57,7 +59,12 @@ class BrowserScrapper {
 
     try {
       const page = await this.browser.newPage();
-      await page.goto(config.url, {waitUntil: 'networkidle0'});
+      page.setViewport({
+          width: config.viewport.width,
+          height: config.viewport.height,
+          deviceScaleFactor: config.viewport.deviceScaleFactor
+      });
+      await page.goto(config.url, {timeout: MAX_NAVIGATION_TIMEOUT, waitUntil: 'networkidle0'});
 
       await navigation(page);
 
