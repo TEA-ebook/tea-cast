@@ -7,7 +7,7 @@
     <main>
         <ul>
         {{#each incident.logs}}
-            <li>{{this.description}}</li>
+            <li>{{this.agent}} : {{this.content}}</li>
         {{/each}}
         </ul>
     </main>
