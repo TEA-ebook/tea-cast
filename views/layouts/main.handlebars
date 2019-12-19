@@ -40,15 +40,18 @@
         }
 
         .incident {
-            align-items: flex-start;
             background-color: rgba(43, 57, 255, 0.77);
             color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
             height: 100%;
-            padding: 1em 2em;
             width: 100%;
+
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: 5rem auto 3rem;
+            grid-template-areas:
+                    "header header header sidebar"
+                    "main main main sidebar"
+                    "footer footer footer sidebar";
         }
 
         .incident.SEV-1 {
@@ -63,33 +66,93 @@
 
         .incident header {
             align-items: center;
-            display: flex;
+            display: grid;
+            grid-area: header;
+            grid-template-areas: "sev title";
+            grid-template-columns: 1fr 4fr;
+            grid-template-rows: auto;
+
         }
 
         .incident-title {
             font-size: 2rem;
             font-weight: normal;
+            grid-area: title;
             margin: 0;
         }
 
         .incident-sev {
             font-size: 3rem;
             font-weight: bold;
-            margin-right: 1em;
+            grid-area: sev;
+            padding: 0.1em 0.4em;
         }
 
-        .incident-count {
-            align-items: center;
-            border: 0.2em solid white;
-            border-radius: 1.8em;
+        .incident main {
+            grid-area: main;
+        }
+
+        .incident main ul {
+            list-style: none;
+        }
+
+        .incident footer {
+            grid-area: footer;
+        }
+
+        .incident aside {
+            align-items: flex-start;
+            background-color: white;
+            box-shadow: -1px 2px 10px 3px rgba(0, 0, 0, 0.3) inset;
+            color: #000;
             display: flex;
+            flex-direction: column;
             font-size: 2rem;
-            height: 1.8em;
-            justify-content: center;
-            position: fixed;
-            right: 0.2em;
-            top: 0.2em;
-            width: 1.8em;
+            grid-area: sidebar;
+            height: 100%;
+            justify-content: flex-start;
+            padding: 0.4em 1em;
+        }
+
+
+        .incident aside h3 {
+            font-size: 2rem;
+            font-weight: normal;
+            margin: 0 0 1em;
+        }
+
+        .incident aside ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .incident-resume {
+            color: #000;
+            display: flex;
+            flex-direction: column;
+            font-size: 0.5em;
+        }
+
+
+        .incident-resume:not(:last-child) {
+            margin-bottom: 1em;
+        }
+
+        .incident-resume-title {
+            font-size: 150%;
+        }
+
+        .incident-resume.SEV-1 .incident-resume-title {
+            color: red;
+        }
+
+        .incident-resume.SEV-2 .incident-resume-title  {
+            color: rgb(255, 132, 18);
+        }
+
+        .incident-log {
+
         }
     </style>
 </head>

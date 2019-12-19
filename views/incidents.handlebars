@@ -2,14 +2,26 @@
     <header>
         <span class="incident-sev">{{incident.priority}}</span>
         <h1 class="incident-title">{{incident.title}}</h1>
-        <span class="incident-count">{{incidentCount}}</span>
     </header>
     <main>
         <ul>
         {{#each incident.logs}}
-            <li>{{this.agent}} : {{this.content}}</li>
+            <li class="incident-log">{{this.agent}} : {{this.content}}</li>
         {{/each}}
         </ul>
     </main>
+    {{#if displayList}}
+        <aside>
+            <h3>Autres incidents en cours</h3>
+            <ul>
+                {{#each incidentList}}
+                    <li class="incident-resume {{this.priority}}">
+                        <span class="incident-resume-title">{{this.title}}</span>
+                        <span>Rémi</span>
+                    </li>
+                {{/each}}
+            </ul>
+        </aside>
+    {{/if}}
     <footer></footer>
 </section>
