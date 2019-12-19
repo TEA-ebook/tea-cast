@@ -1,5 +1,5 @@
 const GrafanaScrapper = require(`${__dirname}/GrafanaScrapper.js`);
-const LockRedisScrapper =  require(`${__dirname}/LockRedisScrapper.js`);
+const LockRedisScrapper = require(`${__dirname}/LockRedisScrapper.js`);
 
 class Device {
 
@@ -72,7 +72,7 @@ class Device {
   stream() {
     const device = this;
 
-    const [ displayMethod, id ] = this.config.type.split(':');
+    const [displayMethod, id] = this.config.type.split(':');
 
     // scrap image and send it
     if (displayMethod === 'scrapper') {
@@ -98,12 +98,16 @@ class Device {
   }
 
   displayImage(url) {
-    this.session.send({ image: url });
+    this.session.send({image: url});
   }
 
   displayUrl(url) {
     console.log(`[${this.name}] Display iframe ${url}`);
-    this.session.send({ url });
+    this.session.send({url});
+  }
+
+  displayIncident(url) {
+    this.session.send({image: `${url}/incident.jpg`});
   }
 }
 
@@ -116,7 +120,7 @@ function chromecastFree(status) {
 }
 
 function launchApp(device, castAppId) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     device.chromecast.application(castAppId, (err, app) => {
       if (err) {
         reject(err);
@@ -152,9 +156,9 @@ function getSession(app, castUrn) {
 }
 
 function clearHandler(handler) {
-    if (handler) {
-        clearInterval(handler);
-    }
+  if (handler) {
+    clearInterval(handler);
+  }
 }
 
 module.exports = Device;

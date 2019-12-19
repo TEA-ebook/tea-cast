@@ -1,7 +1,5 @@
-<div class="devices">
-{{#each devices}}
-  <div class="chromecast">
-    <img src="{{image}}" alt="{{name}}" />
-  </div>
-{{/each}}
-</div>
+<form action="/incident" method="POST">
+    <input type="submit" name="sev1" value="SEV-1" />
+    <input type="submit" name="sev2" value="SEV-2" />
+    <input type="submit" name="normal" value="Back to normal" />
+</form>

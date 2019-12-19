@@ -11,7 +11,9 @@
   "author": "Johan Poirier <johan.poirier@gmail.com> (https://twitter.com/johanpoirier)",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.16.2",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^3.1.0",
     "mdns": "^2.4.0",
     "nodecastor": "github:possan/nodecastor",
     "puppeteer": "1.17.0"
