@@ -15,6 +15,7 @@
     "express": "^4.17.1",
     "express-handlebars": "^3.1.0",
     "mdns": "^2.4.0",
+    "node-pagerduty": "^1.1.6",
     "nodecastor": "github:possan/nodecastor",
     "puppeteer": "1.17.0"
   }

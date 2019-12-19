@@ -103,11 +103,10 @@ class Device {
 
   displayUrl(url) {
     console.log(`[${this.name}] Display iframe ${url}`);
+    if (!this.session) {
+      return;
+    }
     this.session.send({url});
-  }
-
-  displayIncident(url) {
-    this.session.send({image: `${url}/incident.jpg`});
   }
 }
 

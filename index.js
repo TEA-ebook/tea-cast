@@ -13,6 +13,15 @@ const scanner = nodecastor.scan();
 const localIp = require('./src/ip.js');
 const browser = new BrowserScrapper(`http://${localIp}:9999/screenshots`);
 
+const PagerDuty = require('./src/PagerDuty.js');
+const pager = new PagerDuty(config.pagerDuty);
+
+let incidents = [];
+pager.listIncidents().then(response => {
+  const incidentsResponse = JSON.parse(response.body);
+  updateIncidents(incidentsResponse.incidents.map(incident => ({incident})));
+  setTimeout(displayIncidents, 5000);
+});
 
 scanner.on('online', chromecast => {
   console.log(`Detected chromecast ${chromecast.friendlyName}`);
@@ -56,18 +65,30 @@ app.get('/', function (req, res) {
   res.render('index');
 });
 
-const urlencodedParser = bodyParser.urlencoded({ extended: false });
-app.post('/incident', urlencodedParser, function (req, res) {
-  if (req.body.normal) {
-    devices.forEach(device => device.stream());
-  } else {
-    devices.forEach(device => device.displayIncident(`http://${localIp}:9999`));
-  }
-  res.redirect(301, '/');
-});
-
 app.get('/screens', function (req, res) {
   res.render('screens', {devices: devices.map(d => ({name: d.name, image: d.lastImageUrl}))});
+});
+
+const jsonParser = bodyParser.json();
+app.post('/pagerduty', jsonParser, function (req, res) {
+  const messages = req.body.messages;
+  updateIncidents(messages);
+
+  res.sendStatus(204);
+
+  if (incidents.length > 0) {
+    displayIncidents();
+  } else {
+    devices.forEach(device => device.stream());
+  }
+});
+
+app.get('/incidents', function (req, res) {
+  const sortedIncidents = incidents.sort((a, b) => (a.lastChange > b.lastChange) ? -1 : 1);
+  res.render('incidents', {
+    incident: sortedIncidents[0],
+    incidentCount: incidents.length
+  });
 });
 
 process.on('SIGINT', function () {
@@ -75,3 +96,41 @@ process.on('SIGINT', function () {
   devices.map(device => device.stop());
   process.exit(0);
 });
+
+
+function updateIncidents(messages) {
+  messages.forEach(message => {
+    const incident = message.incident;
+    const logs = message.log_entries ? message.log_entries : [incident.first_trigger_log_entry];
+
+    if (!incident.priority || parseInt(incident.priority.name.split('-').pop(), 10) > 3) {
+      return;
+    }
+
+    let currentIncident = incidents.find(i => i.id === incident.id);
+    if (!currentIncident) {
+      currentIncident = {id: incident.id};
+      incidents.push(currentIncident);
+    }
+
+    if (incident.status === 'resolved') {
+      incidents = incidents.filter(i => i.id !== incident.id);
+      return;
+    }
+
+    Object.assign(currentIncident, {
+      id: incident.id,
+      title: incident.title,
+      status: incident.status,
+      priority: incident.priority ? incident.priority.name : 'SEV-?',
+      lastChange: logs.pop().created_at
+    });
+  });
+}
+
+function displayIncidents() {
+  if (incidents.length === 0) {
+    return;
+  }
+  devices.forEach(device => device.displayUrl(`http://${localIp}:9999/incidents`));
+}

@@ -1,0 +1,15 @@
+<section class="incident {{incident.priority}}">
+    <header>
+        <span class="incident-sev">{{incident.priority}}</span>
+        <h1 class="incident-title">{{incident.title}}</h1>
+        <span class="incident-count">{{incidentCount}}</span>
+    </header>
+    <main>
+        <ul>
+        {{#each incident.logs}}
+            <li>{{this.description}}</li>
+        {{/each}}
+        </ul>
+    </main>
+    <footer></footer>
+</section>
