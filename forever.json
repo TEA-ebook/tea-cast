@@ -1,0 +1,8 @@
+{
+    "uid": "tea-cast",
+    "append": true,
+    "watch": false,
+    "script": "--icu-data-dir=/home/pi/tea/tea-cast/node_modules/full-icu index.js",
+    "sourceDir": "/home/pi/tea/tea-cast",
+    "logFile": "/var/log/tea-cast.log"
+}
