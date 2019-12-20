@@ -6,9 +6,14 @@
     <main>
         <ul>
         {{#each incident.logs}}
-            <li class="incident-log">{{this.agent}} : {{this.content}}</li>
+            <li class="incident-log">
+                <span class="incident-log-date">{{this.humanReadableDate}}</span> {{this.content}}
+            </li>
         {{/each}}
         </ul>
+        {{#if incident.shouldPlaySiren}}
+            <audio src="/sound.mp3" autoplay></audio>
+        {{/if}}
     </main>
     {{#if displayList}}
         <aside>
@@ -17,11 +22,13 @@
                 {{#each incidentList}}
                     <li class="incident-resume {{this.priority}}">
                         <span class="incident-resume-title">{{this.title}}</span>
-                        <span>Rémi</span>
+                        <span>{{this.assignees}}</span>
                     </li>
                 {{/each}}
             </ul>
         </aside>
     {{/if}}
-    <footer></footer>
+    <footer>
+        <span class="incident-assignees">Responsable{{#if incident.isMultipleAssignees}}s{{/if}} :</span> {{incident.assignees}}
+    </footer>
 </section>

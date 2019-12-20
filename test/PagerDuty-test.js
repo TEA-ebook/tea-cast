@@ -19,6 +19,11 @@ describe('PagerDuty', function() {
       "priority": {
         "name": "SEV-9000",
       },
+      "assignments": [{
+        "assignee": {
+          "summary": "Luca Doncic"
+        }
+      }]
     });
 
     //Then
@@ -39,6 +44,11 @@ describe('PagerDuty', function() {
       "id": "ID",
       "title": "title",
       "status": "status",
+      "assignments": [{
+        "assignee": {
+          "summary": "Luca Doncic"
+        }
+      }]
     });
 
     //Then
@@ -57,6 +67,11 @@ describe('PagerDuty', function() {
       "id": "ID",
       "title": "title",
       "status": "status",
+      "assignments": [{
+        "assignee": {
+          "summary": "Luca Doncic"
+        }
+      }]
     });
 
     //When
@@ -67,6 +82,11 @@ describe('PagerDuty', function() {
       "priority": {
         "name": "SEV-9000",
       },
+      "assignments": [{
+        "assignee": {
+          "summary": "Luca Doncic"
+        }
+      }]
     });
 
     //Then
