@@ -100,5 +100,5 @@ function displayIncidents() {
   if (pager.incidents.length === 0) {
     return;
   }
-  devices.forEach(device => device.displayUrl(`http://${localIp}:9999/incidents`));
+  devices.filter(d => d.displayAlerts).forEach(device => device.displayUrl(`http://${localIp}:9999/incidents`));
 }

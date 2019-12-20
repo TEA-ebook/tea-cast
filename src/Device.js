@@ -10,6 +10,7 @@ class Device {
     this.name = this.config.device;
     this.session = null;
     this.live = false;
+    this.displayAlerts = config.displayAlerts;
   }
 
   connect(castAppId, castUrn) {

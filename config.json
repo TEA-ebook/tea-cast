@@ -12,7 +12,8 @@
         "height": 720,
         "deviceScaleFactor": 1.5
       },
-      "refreshInterval": 10000
+      "refreshInterval": 10000,
+      "displayAlerts": false
     }
   ]
 }
