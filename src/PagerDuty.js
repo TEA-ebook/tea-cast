@@ -1,10 +1,9 @@
-const PdClient = require('node-pagerduty');
 const Incident = require('./Incident');
 
 class PagerDuty {
 
-  constructor(config) {
-    this.client = new PdClient(config.token);
+  constructor(client) {
+    this.client = client;
     this.incidents = [];
   }
 

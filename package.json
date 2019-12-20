@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "inspect": "node --inspect index.js",
-    "debug": "env DEBUG=\"puppeteer:*\" node --inspect index.js"
+    "debug": "env DEBUG=\"puppeteer:*\" node --inspect index.js",
+    "test": "nyc --reporter=text mocha"
   },
   "author": "Johan Poirier <johan.poirier@gmail.com> (https://twitter.com/johanpoirier)",
   "license": "MIT",
@@ -18,5 +19,9 @@
     "node-pagerduty": "^1.1.6",
     "nodecastor": "github:possan/nodecastor",
     "puppeteer": "1.17.0"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.2",
+    "nyc": "^14.1.1"
   }
 }
