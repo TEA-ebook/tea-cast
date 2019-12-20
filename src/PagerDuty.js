@@ -27,7 +27,10 @@ class PagerDuty {
   }
 
   async fetchIncidents() {
-    const response = await this.client.incidents.listIncidents();
+    const response = await this.client.incidents.listIncidents({
+      sort_by: 'created_at:DESC',
+      statuses: ['triggered', 'acknowledged']
+    });
 
     const incidentsResponse = JSON.parse(response.body);
 
