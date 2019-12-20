@@ -80,9 +80,12 @@ app.post('/pagerduty', jsonParser, async function (req, res) {
 });
 
 app.get('/incidents', function (req, res) {
+  const majorIncident = pager.getMostRelevantIncident();
+  const otherIncidents = pager.incidents.filter(i => i.id !== majorIncident.id);
   res.render('incidents', {
-    incident: pager.getMostRelevantIncident(),
-    incidentList: pager.incidents
+    incident: majorIncident,
+    incidentList: otherIncidents,
+    displayList: otherIncidents.length > 0
   });
 });
 

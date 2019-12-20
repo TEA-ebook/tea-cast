@@ -2,14 +2,33 @@
     <header>
         <span class="incident-sev">{{incident.priority}}</span>
         <h1 class="incident-title">{{incident.title}}</h1>
-        <span class="incident-count">{{incidentCount}}</span>
     </header>
     <main>
         <ul>
         {{#each incident.logs}}
-            <li>{{this.agent}} : {{this.content}}</li>
+            <li class="incident-log">
+                <span class="incident-log-date">{{this.humanReadableDate}}</span> {{this.content}}
+            </li>
         {{/each}}
         </ul>
+        {{#if incident.shouldPlaySiren}}
+            <audio src="/alert.mp3" autoplay></audio>
+        {{/if}}
     </main>
-    <footer></footer>
+    {{#if displayList}}
+        <aside>
+            <h3>Incidents en cours</h3>
+            <ul>
+                {{#each incidentList}}
+                    <li class="incident-resume {{this.priority}}">
+                        <span class="incident-resume-title">{{this.title}}</span>
+                        <span>{{this.assignees}}</span>
+                    </li>
+                {{/each}}
+            </ul>
+        </aside>
+    {{/if}}
+    <footer>
+        <span class="incident-assignees">Responsable{{#if incident.isMultipleAssignees}}s{{/if}} :</span> {{incident.assignees}}
+    </footer>
 </section>

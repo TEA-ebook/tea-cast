@@ -1,10 +1,10 @@
 class Incident {
 
-  constructor(id, title, status, priority) {
+  constructor(id) {
     this.id = id;
-    this.title = title;
-    this.status = status;
-    this.priority = priority;
+    this.title = '';
+    this.status = null;
+    this.priority = null;
     this.logList = [];
   }
 
@@ -18,6 +18,18 @@ class Incident {
 
   get logs() {
     return this.logList;
+  }
+
+  get assignees() {
+    return this.assignments.join(', ');
+  }
+
+  get isMultipleAssignees() {
+    return this.assignments.length > 1;
+  }
+
+  get shouldPlaySiren() {
+    return this.priority === 'SEV-1' && this.status === 'triggered';
   }
 }
 
