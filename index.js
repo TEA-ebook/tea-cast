@@ -13,8 +13,9 @@ const scanner = nodecastor.scan();
 const localIp = require('./src/ip.js');
 const browser = new BrowserScrapper(`http://${localIp}:9999/screenshots`);
 
+const PdClient = require('node-pagerduty');
 const PagerDuty = require('./src/PagerDuty.js');
-const pager = new PagerDuty(config.pagerDuty);
+const pager = new PagerDuty(new PdClient(config.pagerDuty.token));
 
 pager.fetchIncidents().then(() => setTimeout(displayIncidents, 5000));
 
