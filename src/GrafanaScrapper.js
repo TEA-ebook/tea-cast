@@ -7,9 +7,9 @@ class GrafanaScrapper extends Scrapper {
   }
 
   async navigation(page) {
-    const onLoginPage = await page.$('[name="username"]');
+    const onLoginPage = await page.$('[name="user"]');
     if (onLoginPage) {
-      await page.type('[name="username"]', this.config.login);
+      await page.type('[name="user"]', this.config.login);
       await page.type('[name="password"]', this.config.password);
       await page.click('[type="submit"]');
 
