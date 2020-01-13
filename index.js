@@ -13,12 +13,6 @@ const scanner = nodecastor.scan();
 const localIp = require('./src/ip.js');
 const browser = new BrowserScrapper(`http://${localIp}:9999/screenshots`);
 
-const PdClient = require('node-pagerduty');
-const PagerDuty = require('./src/PagerDuty.js');
-const pager = new PagerDuty(new PdClient(config.pagerDuty.token));
-
-pager.fetchIncidents().then(() => setTimeout(displayIncidents, 5000));
-
 scanner.on('online', chromecast => {
   console.log(`Detected chromecast ${chromecast.friendlyName}`);
   const connectedChromecastConfigs = config.dashboards.filter(dashboard => dashboard.device === chromecast.friendlyName);
@@ -65,40 +59,47 @@ app.get('/screens', function (req, res) {
   res.render('screens', {devices: devices.map(d => ({name: d.name, image: d.lastImageUrl}))});
 });
 
-const jsonParser = bodyParser.json();
-app.post('/pagerduty', jsonParser, async function (req, res) {
-  const messages = req.body.messages;
-  res.sendStatus(204);
+if (config.pagerDuty && config.pagerDuty.token) {
+  const PdClient = require('node-pagerduty');
+  const PagerDuty = require('./src/PagerDuty.js');
+  const pager = new PagerDuty(new PdClient(config.pagerDuty.token));
 
-  await pager.handleMessages(messages);
+  const displayIncidents = () => {
+    if (pager.incidents.length === 0) {
+      return;
+    }
+    devices.filter(d => d.displayAlerts).forEach(device => device.displayUrl(`http://${localIp}:9999/incidents`));
+  };
 
-  if (pager.incidents.length > 0) {
-    displayIncidents();
-  } else {
-    devices.forEach(device => device.stream());
-  }
-});
+  pager.fetchIncidents().then(() => setTimeout(displayIncidents, 5000));
 
-app.get('/incidents', function (req, res) {
-  const majorIncident = pager.getMostRelevantIncident();
-  const otherIncidents = pager.incidents.filter(i => i.id !== majorIncident.id);
-  res.render('incidents', {
-    incident: majorIncident,
-    incidentList: otherIncidents,
-    displayList: otherIncidents.length > 0
+  const jsonParser = bodyParser.json();
+  app.post('/pagerduty', jsonParser, async function (req, res) {
+    const messages = req.body.messages;
+    res.sendStatus(204);
+
+    await pager.handleMessages(messages);
+
+    if (pager.incidents.length > 0) {
+      displayIncidents();
+    } else {
+      devices.forEach(device => device.stream());
+    }
   });
-});
+
+  app.get('/incidents', function (req, res) {
+    const majorIncident = pager.getMostRelevantIncident();
+    const otherIncidents = pager.incidents.filter(i => i.id !== majorIncident.id);
+    res.render('incidents', {
+      incident: majorIncident,
+      incidentList: otherIncidents,
+      displayList: otherIncidents.length > 0
+    });
+  });
+}
 
 process.on('SIGINT', function () {
   console.log('Stopping TEA Cast');
   devices.map(device => device.stop());
   process.exit(0);
 });
-
-
-function displayIncidents() {
-  if (pager.incidents.length === 0) {
-    return;
-  }
-  devices.filter(d => d.displayAlerts).forEach(device => device.displayUrl(`http://${localIp}:9999/incidents`));
-}
