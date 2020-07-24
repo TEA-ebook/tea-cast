@@ -96,9 +96,21 @@ class Device {
       }
       device.displayUrl(device.config.url);
     }
+
+    // display local image
+    else if (displayMethod === 'image') {
+      device.displayLocalImage(device.config.path);
+    }
   }
 
   displayImage(url) {
+    console.log(`[${this.name}] Display image ${url}`);
+    this.session.send({image: url});
+  }
+
+  displayLocalImage(path) {
+    const url = `${this.browser.serverPath}/${path}`;
+    console.log(`[${this.name}] Display image ${url}`);
     this.session.send({image: url});
   }
 

@@ -11,6 +11,7 @@ class BrowserScrapper {
     this.processing = false;
 
     this.serverPath = serverPath;
+    this.screenshotsPath = `${serverPath}/screenshots`;
   }
 
   async start() {
@@ -82,7 +83,7 @@ class BrowserScrapper {
   async scrap(page, device) {
     return page
       .screenshot({path: `${this.outputPath}/${device}.png`})
-      .then(() => `${this.serverPath}/${device}.png?time=${Date.now()}`);
+      .then(() => `${this.screenshotsPath}/${device}.png?time=${Date.now()}`);
   }
 
   stop() {

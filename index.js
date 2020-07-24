@@ -11,7 +11,7 @@ const devices = [];
 const scanner = nodecastor.scan();
 
 const localIp = require('./src/ip.js');
-const browser = new BrowserScrapper(`http://${localIp}:9999/screenshots`);
+const browser = new BrowserScrapper(`http://${localIp}:9999`);
 
 scanner.on('online', chromecast => {
   console.log(`Detected chromecast ${chromecast.friendlyName}`);
